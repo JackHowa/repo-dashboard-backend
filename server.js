@@ -66,6 +66,4 @@ router.post('/votes', (req, res) => {
 
 app.use('/api', router);
 
-app.listen(port, () => console.log(`Example app listening on port ${port}`));
-
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
