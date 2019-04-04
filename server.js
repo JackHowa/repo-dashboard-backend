@@ -9,7 +9,8 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Votes = require('./models/Votes');
 
-const API_PORT = 3001;
+const API_PORT = process.env.PORT || 3000;
+
 const app = express();
 app.use(cors());
 const router = express.Router();
@@ -64,5 +65,7 @@ router.post('/votes', (req, res) => {
 });
 
 app.use('/api', router);
+
+app.listen(port, () => console.log(`Example app listening on port ${port}`));
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
