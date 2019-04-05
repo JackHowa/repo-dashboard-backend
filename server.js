@@ -38,7 +38,9 @@ router.get('/votes', (req, res) => {
     { $group: { _id: '$repoName', totalVotes: { $sum: 1 } } },
     { $project: { totalVotes: '$totalVotes' } }
   ])
-    .then(data => res.json({ success: true, data }))
+    .then(data => {
+      return res.json({ success: true, data });
+    })
     .catch(err => {
       return res.json({ success: false, error: err });
     });
@@ -60,8 +62,6 @@ router.post('/votes', (req, res) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
-
-  return res.json({ success: false, error: 'Something unexpected went wrong' });
 });
 
 app.use('/api', router);
