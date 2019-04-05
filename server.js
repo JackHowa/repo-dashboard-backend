@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Votes = require('./models/Votes');
 
-const API_PORT = process.env.PORT || 3000;
+const API_PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(cors());
@@ -48,20 +48,48 @@ router.get('/votes', (req, res) => {
 
 router.post('/votes', (req, res) => {
   const data = new Votes();
-  const { repoName } = req.body;
+  const { repoName, emailAddress } = req.body;
 
-  if (!repoName && repoName !== '') {
+  if (emailAddress === '') {
     return res.json({
       success: false,
-      error: 'INVALID INPUTS'
+      error: 'Please enter an email address'
     });
   }
 
+  // todo: potentially add an update feature
+  Votes.countDocuments({ emailAddress }).then(voteCount => {
+    if (voteCount > 0) {
+      return res.json({
+        success: false,
+        error: 'This email has already been used'
+      });
+    }
+  });
+
   data.repoName = repoName;
+  data.emailAddress = emailAddress;
   data.save(err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
+});
+
+router.get('/votes/:emailAddress?', (req, res) => {
+  const { emailAddress } = req.params;
+
+  Votes.findOne({ emailAddress })
+    .then(vote => {
+      return res.json({
+        alreadyVoted: true,
+        repoName: vote.repoName
+      });
+    })
+    .catch(() => {
+      return res.json({
+        alreadyVoted: false
+      });
+    });
 });
 
 app.use('/api', router);
