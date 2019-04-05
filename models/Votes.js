@@ -5,7 +5,6 @@ const { Schema } = mongoose;
 const VotesSchema = new Schema(
   {
     repoName: String,
-    voteAmount: Number,
     emailAddress: String
   },
   { timestamps: true }
